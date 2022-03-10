@@ -658,7 +658,7 @@
     "@taquito/utils" "^11.2.0"
     bignumber.js "^9.0.2"
 
-"@taquito/signer@^11.0.2":
+"@taquito/signer@^11.0.2", "@taquito/signer@^11.2.0":
   version "11.2.0"
   resolved "https://registry.yarnpkg.com/@taquito/signer/-/signer-11.2.0.tgz#93962aba355687c92eb968b8d67cdf1e386a4b41"
   integrity sha512-OthNW7gN2hJNph8VMy9LRbZcn7bIBaKdrfC+hAy5N6yzG8EW/t6IEMAgESmNcthMhPUhuOWS37khuwMsuL1GUg==

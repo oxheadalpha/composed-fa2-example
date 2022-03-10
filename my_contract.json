@@ -1,0 +1,6 @@
+{
+  "implementation": "USE_FUNGIBLE_TOKEN",
+  "admin": "USE_PAUSABLE_SIMPLE_ADMIN",
+  "minter": [],
+  "minterAdmin": "USE_NULL_MINTER_ADMIN"
+}
