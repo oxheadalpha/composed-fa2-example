@@ -112,6 +112,11 @@ type tzfa2_main_entrypoint =
   | Asset of asset_entrypoints
   | Tzfa2 of tzfa2_entrypoints
 
+let custom_entrypoints (param, storage : tzfa2_entrypoints * tzfa2_storage)
+    : (operation list) * tzfa2_storage =
+  (* will add custom entry points handlers later *)
+  ([] : operation list), storage
+
 let tzfa2_main (param, storage: tzfa2_main_entrypoint * tzfa2_storage)
     : (operation list) * tzfa2_storage =
   match param with
@@ -120,9 +125,8 @@ let tzfa2_main (param, storage: tzfa2_main_entrypoint * tzfa2_storage)
     let ops, new_asset = asset_main (asset, storage.asset) in
     let new_s = { storage with asset = new_asset } in
     (ops, new_s)
-  | Tzfa2 tzfa2_param  ->
-    (* will add custom entry points handlers later *)
-    ([] : operation list), storage
+  
+  | Tzfa2 tzfa2_param  -> custom_entrypoints (tzfa2_param, storage)
 ```
 
 To test if our contract code compiles, we can add a build script based on `tzGen`
