@@ -1,0 +1,32 @@
+{
+  "name": "@oxheadalpha/composed-fa2-example",
+  "description": "Example of a composed and customized FA2 contract using @oxheadalpha/fa2-contracts",
+  "version": "0.0.1",
+  "keywords": [
+    "tezos",
+    "smart contracts",
+    "NFT",
+    "FA2",
+    "TZIP-12",
+    "TZIP-21"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oxheadalpha/composed-fa2-example.git"
+  },
+  "devDependencies": {
+    "@jest/types": "^27.5.1",
+    "@oxheadalpha/fa2-contracts": "^4.0.0",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "@taquito/taquito": "^11.2.0"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "jest --runInBand"
+  }
+}
