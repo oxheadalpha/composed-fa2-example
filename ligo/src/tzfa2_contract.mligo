@@ -33,6 +33,16 @@ let assert_fee (expected_fee, current_fee : nat * nat) : unit =
   then failwith "UNEXPECTED_FEE"
   else unit
 
+let mint (fee_percent, storage : nat * tzfa2_storage)
+    : (operation list) * tzfa2_storage =
+  let _ = assert_fee (fee_percent, storage.fee_percent) in
+  ([] : operation list), storage
+
+let burn (param, storage : burn_param * tzfa2_storage)
+    : (operation list) * tzfa2_storage =
+  let _ = assert_fee (param.fee_percent, storage.fee_percent) in
+  ([] : operation list), storage
+
 let withdraw_fees (storage : tzfa2_storage)
     : (operation list) * tzfa2_storage =
   let new_s = { storage with collected_fees = 0mutez; } in
@@ -53,15 +63,15 @@ let change_fee (param, storage : change_fee_param * tzfa2_storage)
 let custom_entrypoints (param, storage : tzfa2_entrypoints * tzfa2_storage)
     : (operation list) * tzfa2_storage =
   match param with
-  | Mint _fee ->
+  | Mint fee ->
     let _ = fail_if_paused storage.asset.admin in
     let _ = fail_if_not_minter storage.asset in
-    ([] : operation list), storage
+    mint (fee, storage)
 
-  | Burn _p ->
+  | Burn p ->
     let _ = fail_if_paused storage.asset.admin in
     let _ = fail_if_not_minter storage.asset in
-    ([] : operation list), storage
+    burn (p, storage)
 
   | Change_fee p ->
     let _ = fail_if_not_admin storage.asset.admin in

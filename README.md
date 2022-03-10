@@ -147,4 +147,16 @@ any time we made changes to the contract code.
 The next step is to implement handlers for the custom entry points. The final
 implementation of custom entry points can be found in
 [tzfa2-contract.mligo](./ligo/src/tzfa2-contract.mligo). The implementation uses
+the `fail_if_not_admin` guard for the custom admin entry points, and
+`fail_if_paused` and `fail_if_not_minter` guards for the `mint` and `burn` entry
+points, Those guards are part of the public admin and minter admin modules API
+(see
+[LIGO modules](https://github.com/oxheadalpha/nft-tutorial/blob/master/packages/fa2-contracts/README.md#cameligo-modules)
+description in `@oxheadalpha/fa2-contracts` package for more details). If we
+decide to change the specification for the contract admin and/or minter admin and
+regenerate the base FA2 contract, we do not need to change our custom extension
+code, since the public modules API will remain the same.
 
+### Generate And Extend TypeScript API
+
+kjk
