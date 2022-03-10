@@ -28,7 +28,7 @@
     "@taquito/taquito": "^11.2.0"
   },
   "scripts": {
-    "build:contract": "yarn tzgen michelson base_ft_contract base_ft_contract",
+    "build:contract": "yarn tzgen michelson tzfa2_contract tzfa2_contract --main tzfa2_main",
     "build:ts": "tsc -p .",
     "build": "yarn build:contract && yarn build:ts",
     "test": "jest --runInBand"
