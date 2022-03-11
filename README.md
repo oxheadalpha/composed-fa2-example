@@ -86,9 +86,10 @@ custom mint and burn implementation.
 ### Extend Base LIGO Contract
 
 First we need to define LIGO types for the custom contract storage and the main
-entry point. In the `./ligo/src` directory we create a new contract file
-`tzfa2_contract.mligo` and include the generated `base_ft_contract.mligo`. Then
-we define a new storage type as a record combining `asset_storage` from the
+entry point. In the [./ligo/src](./ligo/src) directory we create a new contract
+file [tzfa2_contract.mligo](./ligo/src/tzfa2_contract.mligo) and include the
+generated [base_ft_contract.mligo](./ligo/src/base_ft_contract.mligo). Then we
+define a new storage type as a record combining `asset_storage` from the
 generated contract and the exchange fee related fields:
 
 ```ocaml
@@ -157,7 +158,7 @@ any time we made changes to the contract code.
 
 The next step is to implement handlers for the custom entry points. The final
 implementation of custom entry points can be found in
-[tzfa2-contract.mligo](./ligo/src/tzfa2-contract.mligo). The implementation uses
+[tzfa2_contract.mligo](./ligo/src/tzfa2_contract.mligo). The implementation uses
 the `fail_if_not_admin` guard for the custom admin entry points, and
 `fail_if_paused` and `fail_if_not_minter` guards for the `mint` and `burn` entry
 points, Those guards are part of the public admin and minter admin modules API
