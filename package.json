@@ -28,7 +28,6 @@
     "@oxheadalpha/tezos-tools": "^4.0.0",
     "@taquito/signer": "^11.2.0",
     "@taquito/taquito": "^11.2.0",
-    "@taquito/tzip12": "^11.2.0",
     "bignumber.js": "^9.0.2",
     "fs": "^0.0.1-security",
     "path": "^0.12.7"

@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js';
 import { TezosToolkit } from '@taquito/taquito';
-import { TokenMetadata } from '@taquito/tzip12';
 import {
   address,
   createOnChainTokenMetadata,
@@ -38,10 +37,11 @@ const tzip16Meta = {
   }
 };
 
-const tokenMeta: TokenMetadata = {
+const tokenMeta = {
   token_id: 0,
   decimals: 1000000,
-  symbol: 'TZFA2'
+  symbol: 'TZFA2',
+  shouldPreferSymbol: true
 };
 
 export const originateCustomContract = async (
