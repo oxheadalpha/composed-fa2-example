@@ -31,9 +31,9 @@ let assert_fee (expected_fee, current_fee : tez * tez) : unit =
 let mint (expected_fee, storage : tez * tzfa2_storage)
     : (operation list) * tzfa2_storage =
   let _ = assert_fee (expected_fee, storage.fee) in
-  let _ = if Tezos.amount <= expected_fee
-    then failwith "INSUFFICIENT_AMOUNT" else unit in
-  let ntokens : nat = (Tezos.amount - expected_fee) / 1mutez in
+  let ntokens : nat = if Tezos.amount <= expected_fee
+  then (failwith "INSUFFICIENT_AMOUNT" : nat)
+  else (Tezos.amount - expected_fee) / 1mutez in
 
   let new_ledger = 
     inc_balance (Tezos.sender, ntokens, storage.asset.assets.ledger) in
