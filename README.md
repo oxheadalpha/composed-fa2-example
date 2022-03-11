@@ -169,6 +169,8 @@ decide to change the specification for the contract admin and/or minter admin an
 regenerate the base FA2 contract, we do not need to change our custom extension
 code, since the public modules API will remain the same.
 
-### Generate And Extend TypeScript API
+### Customize Contract Origination
 
-kjk
+On previous steps we have generated TypeScript 
+
+### Define TypeScript API to Access Custom Entry Points

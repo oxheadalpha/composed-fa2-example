@@ -683,7 +683,7 @@
     bignumber.js "^9.0.2"
     rxjs "^6.6.3"
 
-"@taquito/tzip12@^11.0.2":
+"@taquito/tzip12@^11.0.2", "@taquito/tzip12@^11.2.0":
   version "11.2.0"
   resolved "https://registry.yarnpkg.com/@taquito/tzip12/-/tzip12-11.2.0.tgz#36af2cfdf7749fbb0b90a16edd923be35d6501b8"
   integrity sha512-nTBPlyZFFk1xgWaMYv1b3qf8Z+vSpmZROmYtrWznCgPHjG+9zvzjyPON7Sm3HNKnn5jOOEJ5ErvbPSEyU3IzRg==
