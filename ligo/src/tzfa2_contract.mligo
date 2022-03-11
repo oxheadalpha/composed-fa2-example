@@ -1,4 +1,5 @@
 #include "base_ft_contract.mligo"
+#include "../fa2_lib/fa2/fa2_errors.mligo"
 
 type tzfa2_storage = {
   asset : asset_storage;
@@ -35,7 +36,28 @@ let mint (fee, storage : tez * tzfa2_storage)
 let burn (ntokens, storage : nat * tzfa2_storage)
     : (operation list) * tzfa2_storage =
   let _ = assert_fee (Tezos.amount, storage.fee) in
-  ([] : operation list), storage
+
+  let new_ledger = 
+    dec_balance (Tezos.sender, ntokens, storage.asset.assets.ledger) in
+  let new_supply_opt =
+    Michelson.is_nat (storage.asset.assets.total_supply - ntokens) in
+  let new_supply = match  new_supply_opt with
+  | Some s -> s
+  | None -> (failwith fa2_insufficient_balance : nat)
+  in
+
+  let new_s = { storage with 
+    collected_fees = storage.collected_fees + storage.fee;
+    asset.assets.ledger = new_ledger;
+    asset.assets.total_supply = new_supply;
+  } in
+
+  let callback : unit contract option = Tezos.get_contract_opt Tezos.sender in
+  let op = match callback with
+  | Some c -> Tezos.transaction unit (ntokens * 1mutez) c
+  | None -> (failwith "NO_CALLBACK" : operation)
+  in
+  [op], new_s
 
 let withdraw_fees (storage : tzfa2_storage)
     : (operation list) * tzfa2_storage =
