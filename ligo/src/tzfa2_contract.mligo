@@ -28,10 +28,22 @@ let assert_fee (expected_fee, current_fee : tez * tez) : unit =
   then failwith "UNEXPECTED_FEE"
   else unit
 
-let mint (fee, storage : tez * tzfa2_storage)
+let mint (expected_fee, storage : tez * tzfa2_storage)
     : (operation list) * tzfa2_storage =
-  let _ = assert_fee (fee, storage.fee) in
-  ([] : operation list), storage
+  let _ = assert_fee (expected_fee, storage.fee) in
+  let _ = if Tezos.amount <= expected_fee
+    then failwith "INSUFFICIENT_AMOUNT" else unit in
+  let ntokens : nat = (Tezos.amount - expected_fee) / 1mutez in
+
+  let new_ledger = 
+    inc_balance (Tezos.sender, ntokens, storage.asset.assets.ledger) in
+  let new_supply = storage.asset.assets.total_supply + ntokens in
+  let new_s = { storage with 
+    collected_fees = storage.collected_fees + storage.fee;
+    asset.assets.ledger = new_ledger;
+    asset.assets.total_supply = new_supply;
+  } in
+  ([] : operation list), new_s
 
 let burn (ntokens, storage : nat * tzfa2_storage)
     : (operation list) * tzfa2_storage =
@@ -79,10 +91,10 @@ let change_fee (param, storage : change_fee_param * tzfa2_storage)
 let custom_entrypoints (param, storage : tzfa2_entrypoints * tzfa2_storage)
     : (operation list) * tzfa2_storage =
   match param with
-  | Mint fee ->
+  | Mint expected_fee ->
     let _ = fail_if_paused storage.asset.admin in
     let _ = fail_if_not_minter storage.asset in
-    mint (fee, storage)
+    mint (expected_fee, storage)
 
   | Burn ntokens ->
     let _ = fail_if_paused storage.asset.admin in
