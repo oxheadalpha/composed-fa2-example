@@ -1,20 +1,18 @@
-import { BigNumber } from 'bignumber.js';
 import { TezosToolkit } from '@taquito/taquito';
 import {
   address,
   createOnChainTokenMetadata,
   TokenMetadataInternal
 } from '@oxheadalpha/fa2-interfaces';
-import {originateContract} from '@oxheadalpha/tezos-tools'
+import { mutez } from './utils';
+import { originateContract } from '@oxheadalpha/tezos-tools';
 import { createStorage } from './base_ft_contract';
-
-type mutez = number | BigNumber;
 
 export const createCustomStorage = (
   metadata: string,
   owner: address,
   token: TokenMetadataInternal,
-  fee: mutez
+  fee: mutez //fee is a part of the custom storage extension
 ) => {
   const baseStorage = createStorage({
     metadata,
