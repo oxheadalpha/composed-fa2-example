@@ -2,24 +2,18 @@
 
 type tzfa2_storage = {
   asset : asset_storage;
-  fee_percent : nat;
+  fee : tez;
   collected_fees: tez;
 }
 
-
-type burn_param = {
-  fee_percent: nat;
-  tokens : nat;
-}
-
 type change_fee_param = {
-  old_fee_percent : nat;
-  new_fee_percent : nat;
+  old_fee : tez;
+  new_fee : tez;
 }
 
 type tzfa2_entrypoints =
-  | Mint of nat (* accepts desired exchange fee percent *)
-  | Burn of burn_param
+  | Mint of tez (* accepts desired exchange fee percent *)
+  | Burn of nat (* number of tokens to burn *)
   | Change_fee of change_fee_param
   | Withdraw_fees (* the admin withdraws collected fees *)
 
@@ -28,19 +22,19 @@ type tzfa2_main_entrypoint =
   | Tzfa2 of tzfa2_entrypoints
 
 [@inline]
-let assert_fee (expected_fee, current_fee : nat * nat) : unit =
+let assert_fee (expected_fee, current_fee : tez * tez) : unit =
   if expected_fee <> current_fee
   then failwith "UNEXPECTED_FEE"
   else unit
 
-let mint (fee_percent, storage : nat * tzfa2_storage)
+let mint (fee, storage : tez * tzfa2_storage)
     : (operation list) * tzfa2_storage =
-  let _ = assert_fee (fee_percent, storage.fee_percent) in
+  let _ = assert_fee (fee, storage.fee) in
   ([] : operation list), storage
 
-let burn (param, storage : burn_param * tzfa2_storage)
+let burn (ntokens, storage : nat * tzfa2_storage)
     : (operation list) * tzfa2_storage =
-  let _ = assert_fee (param.fee_percent, storage.fee_percent) in
+  let _ = assert_fee (Tezos.amount, storage.fee) in
   ([] : operation list), storage
 
 let withdraw_fees (storage : tzfa2_storage)
@@ -56,8 +50,8 @@ let withdraw_fees (storage : tzfa2_storage)
 
 let change_fee (param, storage : change_fee_param * tzfa2_storage)
     : (operation list) * tzfa2_storage =
-  let _ = assert_fee (storage.fee_percent, param.old_fee_percent) in
-  let new_s = { storage with fee_percent = param.new_fee_percent; } in
+  let _ = assert_fee (storage.fee, param.old_fee) in
+  let new_s = { storage with fee = param.new_fee; } in
   ([] : operation list), new_s
 
 let custom_entrypoints (param, storage : tzfa2_entrypoints * tzfa2_storage)
@@ -68,10 +62,10 @@ let custom_entrypoints (param, storage : tzfa2_entrypoints * tzfa2_storage)
     let _ = fail_if_not_minter storage.asset in
     mint (fee, storage)
 
-  | Burn p ->
+  | Burn ntokens ->
     let _ = fail_if_paused storage.asset.admin in
     let _ = fail_if_not_minter storage.asset in
-    burn (p, storage)
+    burn (ntokens, storage)
 
   | Change_fee p ->
     let _ = fail_if_not_admin storage.asset.admin in

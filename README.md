@@ -5,6 +5,18 @@ This is an example project to demonstrate usage of the
 package, a library and a tool to generate modular Tezos FA2 contracts and
 TypeScript interfaces.
 
+## Initial Setup
+
+Once we have created a TypeScript project, we need to add a development
+dependency on `@oxheadalpha/fa2-contracts` package and dependency on
+`@oxheadalpha/fa2-interfaces` package.
+
+```sh
+$ yarn add -D @oxheadalpha/fa2-contracts
+...
+$ yarn add @oxheadalpha/fa2-interfaces
+```
+
 ## Custom FA2 Contract
 
 As an example, we are going to implement a single fungible token FA2 contract
@@ -12,8 +24,8 @@ where the FA2 token can be exchanged for Tez. Any address can invoke the `mint`
 contract entry point and transfer some Tez to exchange for the FA2 token. Any
 FA2 token owner can also exchange FA2 tokens for Tez by calling the `burn`
 contract entry point. The exchange rate is always one Mutez per one FA2 token.
-In addition, the contract collects an exchange fee that can set by the contract
-admin. The contract admin can change the exchange fee percent and withdraw
+In addition, the contract collects a flat exchange fee that can set by the
+contract admin. The contract admin can change the exchange fee and withdraw
 collected fees. The contract admin can pause and unpause the contract. If the
 contract is paused, token owners cannot transfer, mint and burn tokens.
 
@@ -67,6 +79,10 @@ $ yarn tzgen type-script my_contract.json base_ft_contract.ts
 ~/composed-fa2-example/src/base_ft_contract.ts is generated
 ```
 
+The generated contract already has the standard FA2 functionality: token
+transfer, operators etc. On the next step we are going to extend it with the
+custom mint and burn implementation.
+
 ### Extend Base LIGO Contract
 
 First we need to define LIGO types for the custom contract storage and the main
@@ -80,7 +96,7 @@ generated contract and the exchange fee related fields:
 
 type tzfa2_storage = {
   asset : asset_storage;
-  fee_percent : nat;
+  fee : tez;
   collected_fees: tez;
 }
 ```
@@ -88,19 +104,14 @@ type tzfa2_storage = {
 Define custom entry points type:
 
 ```ocaml
-type burn_param = {
-  fee_percent: nat;
-  tokens : nat;
-}
-
 type change_fee_param = {
-  old_fee_percent : nat;
-  new_fee_percent : nat;
+  old_fee : tez;
+  new_fee : tez;
 }
 
 type tzfa2_entrypoints =
-  | Mint of nat (* accepts desired exchange fee percent *)
-  | Burn of burn_param
+  | Mint of tez (* accepts desired exchange fee percent *)
+  | Burn of nat (* number of tokens to burn *)
   | Change_fee of change_fee_param
   | Withdraw_fees (* the admin withdraws collected fees *)
 ```
@@ -129,8 +140,8 @@ let tzfa2_main (param, storage: tzfa2_main_entrypoint * tzfa2_storage)
   | Tzfa2 tzfa2_param  -> custom_entrypoints (tzfa2_param, storage)
 ```
 
-To test if our contract code compiles, we can add a build script based on `tzGen`
-to the `package.json` file:
+To test that our contract code compiles, we can add a build script based on
+`tzGen` to the `package.json` file:
 
 ```json
 "build:contract": "yarn tzgen michelson tzfa2_contract tzfa2_contract --main tzfa2_main"
