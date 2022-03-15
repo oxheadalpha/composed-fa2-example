@@ -102,10 +102,6 @@ describe('Mint/Burn/Withdraw', () => {
       mutez: true
     });
     await expect(run2).rejects.toThrow('INSUFFICIENT_AMOUNT');
-
-    // const adminApi = (await tezosApi(mike).at(contractAddress)).with(
-    //   ExchangeAdmin
-    // );
   });
 
   test('Mint', async () => {
@@ -170,7 +166,7 @@ describe('Mint/Burn/Withdraw', () => {
     await expect(run3).rejects.toThrow('UNEXPECTED_FEE');
   });
 
-  test.only('Burn', async () => {
+  test('Burn', async () => {
     const contractAddress = await originateTestContract(mike, 1000000);
     const ownerApi = (await tezosApi(jane, lambdaView).at(contractAddress))
       .with(Minter)
@@ -204,6 +200,59 @@ describe('Mint/Burn/Withdraw', () => {
     const tezBalanceAfterBurn = await getTezBalance(jane);
     const tezBalanceDiff = tezBalanceAfterBurn - tezBalanceBeforeBurn;
     //3tez worth is burned minus 1tez fee
-    expect(tezBalanceDiff/1000000).toBeCloseTo(2, 1);
+    expect(tezBalanceDiff / 1000000).toBeCloseTo(2, 1);
+  });
+
+  test('Withdraw Non Admin', async () => {
+    const contractAddress = await originateTestContract(mike, 1000000);
+    const adminApi = (await tezosApi(jane).at(contractAddress)).with(
+      ExchangeAdmin
+    );
+    const run = runMethod(adminApi.withdrawFees());
+    await expect(run).rejects.toThrow('NOT_AN_ADMIN');
+  });
+
+  test('Withdraw', async () => {
+    const contractAddress = await originateTestContract(mike, 1000000);
+    const ownerApi = (
+      await tezosApi(jane, lambdaView).at(contractAddress)
+    ).with(Minter);
+
+    await runMethod(ownerApi.mint(1000000), { amount: 5000000, mutez: true });
+    await runMethod(ownerApi.burn(3000000), {
+      amount: 1000000, //fee
+      mutez: true
+    });
+
+    const feesBefore = await getCollectedFees(jane, contractAddress);
+    expect(feesBefore).toBe(2000000);
+    const contractBalanceBeforeWithdraw = await getTezBalance(
+      mike,
+      contractAddress
+    );
+    const adminBalanceBeforeWithdraw = await getTezBalance(mike);
+
+    const adminApi = (await tezosApi(mike).at(contractAddress)).with(
+      ExchangeAdmin
+    );
+
+    await runMethod(adminApi.withdrawFees());
+
+    const feesAfter = await getCollectedFees(jane, contractAddress);
+    expect(feesAfter).toBe(0);
+    const contractBalanceAfterWithdraw = await getTezBalance(
+      mike,
+      contractAddress
+    );
+    const contractBalanceDiff =
+      contractBalanceBeforeWithdraw - contractBalanceAfterWithdraw;
+    // withdrawn 2 tez
+    expect(contractBalanceDiff).toBe(2000000);
+
+    const adminBalanceAfterWithdraw = await getTezBalance(mike);
+    const adminBalanceDiff =
+      adminBalanceAfterWithdraw - adminBalanceBeforeWithdraw;
+    //received 2 tez
+    expect(adminBalanceDiff/1000000).toBeCloseTo(2, 1);
   });
 });
