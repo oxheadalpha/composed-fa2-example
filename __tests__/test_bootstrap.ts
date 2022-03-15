@@ -3,14 +3,6 @@ import { InMemorySigner } from '@taquito/signer';
 import { awaitForSandbox } from '@oxheadalpha/tezos-tools';
 import { address } from '@oxheadalpha/fa2-interfaces';
 
-// const mike = await createTestAccount(
-//   bob,
-//   'edskRfLsHb49bP4dTpYzAZ7qHCX4ByK2g6Cwq2LWqRYAQSeRpziaZGBW72vrJnp1ahLGKd9rXUf7RHzm8EmyPgseUi3VS9putT'
-// );
-// const jane = await createTestAccount(
-//   bob,
-//   'edskRqb8GgnD4d2B7nR3ofJajDU7kwooUzXz7yMwRdLDP9j7Z1DvhaeBcs8WkJ4ELXXJgVkq5tGwrFibojDjYVaG7n4Tq1qDxZ'
-// );
 
 export async function getBootstrapAccount(
   secretKey?: string
