@@ -1,8 +1,5 @@
 import * as path from 'path';
 import { promises as fs } from 'fs';
-import { BigNumber } from 'bignumber.js';
-
-export type mutez = number | BigNumber;
 
 export async function loadFile(filePath: string): Promise<string> {
   const resolvedPath = path.isAbsolute(filePath)

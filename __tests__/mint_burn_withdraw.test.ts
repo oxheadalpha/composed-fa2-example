@@ -16,6 +16,7 @@ import {
   address,
   Fa2Contract,
   nat,
+  runMethod,
   tezosApi
 } from '@oxheadalpha/fa2-interfaces';
 import { ExchangeAdmin, Minter } from '../src/contract_interface';
@@ -77,15 +78,6 @@ describe('Mint/Burn/Withdraw', () => {
     );
     lambdaView = await originateLambdaViewContract(tz);
   });
-
-  const runMethod = async (
-    cm: ContractMethod<ContractProvider>,
-    sendParams?: SendParams
-  ): Promise<TransactionOperation> => {
-    const op = await cm.send(sendParams);
-    await op.confirmation();
-    return op;
-  };
 
   test('Invalid Mint', async () => {
     const contractAddress = await originateTestContract(mike, 2000000);

@@ -1,10 +1,9 @@
-import { nat } from '@oxheadalpha/fa2-interfaces';
+import { nat, mutez } from '@oxheadalpha/fa2-interfaces';
 import {
   ContractAbstraction,
   ContractMethod,
   ContractProvider
 } from '@taquito/taquito';
-import { mutez } from './utils';
 
 export interface ExchangeAdminContract {
   withdrawFees: () => ContractMethod<ContractProvider>;

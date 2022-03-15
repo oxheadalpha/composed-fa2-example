@@ -1,10 +1,10 @@
 import { TezosToolkit } from '@taquito/taquito';
 import {
   address,
+  mutez,
   createOnChainTokenMetadata,
   TokenMetadataInternal
 } from '@oxheadalpha/fa2-interfaces';
-import { mutez } from './utils';
 import { originateContract } from '@oxheadalpha/tezos-tools';
 import { createStorage } from './base_ft_contract';
 

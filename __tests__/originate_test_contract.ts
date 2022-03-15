@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { TezosToolkit } from "@taquito/taquito";
-import { loadFile, mutez } from '../src/utils';
-import { address } from '@oxheadalpha/fa2-interfaces';
+import { loadFile } from '../src/utils';
+import { address, mutez } from '@oxheadalpha/fa2-interfaces';
 import { originateCustomContract } from '../src/origination';
 
 export const originateTestContract = async (
