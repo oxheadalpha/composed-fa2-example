@@ -19,7 +19,7 @@ export const createCustomStorage = (
     owner,
     token
   });
-  return { ...baseStorage, fee };
+  return { asset: baseStorage, fee, collected_fees: 0 };
 };
 
 const tzip16Meta = {
