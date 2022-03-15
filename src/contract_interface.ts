@@ -6,14 +6,12 @@ import {
 } from '@taquito/taquito';
 import { mutez } from './utils';
 
-export type ChangeFeeParam = {
-  old_fee: mutez;
-  new_fee: mutez;
-};
-
 export interface ExchangeAdminContract {
   withdrawFees: () => ContractMethod<ContractProvider>;
-  changeFee: (param: ChangeFeeParam) => ContractMethod<ContractProvider>;
+  changeFee: (
+    old_fee: mutez,
+    new_fee: mutez
+  ) => ContractMethod<ContractProvider>;
 }
 
 export interface MinterContract {
@@ -25,7 +23,8 @@ export const ExchangeAdmin = (
   contract: ContractAbstraction<ContractProvider>
 ): ExchangeAdminContract => ({
   withdrawFees: () => contract.methods.withdraw_fees(),
-  changeFee: (param: ChangeFeeParam) => contract.methods.change_fee(param)
+  changeFee: (old_fee: mutez, new_fee: mutez) =>
+    contract.methods.change_fee(old_fee, new_fee)
 });
 
 export const Minter = (

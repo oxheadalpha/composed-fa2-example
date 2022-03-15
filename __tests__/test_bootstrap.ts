@@ -3,29 +3,24 @@ import { InMemorySigner } from '@taquito/signer';
 import { awaitForSandbox } from '@oxheadalpha/tezos-tools';
 import { address } from '@oxheadalpha/fa2-interfaces';
 
-export type TestApi = {
-  bob: TezosToolkit;
-  mike: TezosToolkit;
-  jane: TezosToolkit;
-  lambdaView?: string;
-};
+// const mike = await createTestAccount(
+//   bob,
+//   'edskRfLsHb49bP4dTpYzAZ7qHCX4ByK2g6Cwq2LWqRYAQSeRpziaZGBW72vrJnp1ahLGKd9rXUf7RHzm8EmyPgseUi3VS9putT'
+// );
+// const jane = await createTestAccount(
+//   bob,
+//   'edskRqb8GgnD4d2B7nR3ofJajDU7kwooUzXz7yMwRdLDP9j7Z1DvhaeBcs8WkJ4ELXXJgVkq5tGwrFibojDjYVaG7n4Tq1qDxZ'
+// );
 
-export async function bootstrap(): Promise<TestApi> {
+export async function getBootstrapAccount(
+  secretKey?: string
+): Promise<TezosToolkit> {
   const bob = await createToolkit(
     'http://localhost:20000',
-    'edsk3RFgDiCt7tWB2oe96w1eRw72iYiiqZPLu9nnEY23MYRp2d8Kkx'
+    secretKey || 'edsk3RFgDiCt7tWB2oe96w1eRw72iYiiqZPLu9nnEY23MYRp2d8Kkx'
   );
   await awaitForSandbox(bob);
-  const lambdaView = await originateLambdaViewContract(bob);
-  const mike = await createTestAccount(
-    bob,
-    'edskRfLsHb49bP4dTpYzAZ7qHCX4ByK2g6Cwq2LWqRYAQSeRpziaZGBW72vrJnp1ahLGKd9rXUf7RHzm8EmyPgseUi3VS9putT'
-  );
-  const jane = await createTestAccount(
-    bob,
-    'edskRqb8GgnD4d2B7nR3ofJajDU7kwooUzXz7yMwRdLDP9j7Z1DvhaeBcs8WkJ4ELXXJgVkq5tGwrFibojDjYVaG7n4Tq1qDxZ'
-  );
-  return {bob, mike, jane, lambdaView};
+  return bob;
 }
 
 async function createToolkit(
@@ -38,7 +33,7 @@ async function createToolkit(
   return toolkit;
 }
 
-async function originateLambdaViewContract(
+export async function originateLambdaViewContract(
   tezos: TezosToolkit
 ): Promise<address> {
   console.log('originating Taquito lambda view contract...');
@@ -52,7 +47,7 @@ async function originateLambdaViewContract(
   return lambdaContract.address;
 }
 
-async function createTestAccount(
+export async function createTestAccount(
   tz: TezosToolkit,
   secretKey: string
 ): Promise<TezosToolkit> {
@@ -68,4 +63,3 @@ async function createTestAccount(
   await op.confirmation();
   return toolkit;
 }
-

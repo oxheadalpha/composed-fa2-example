@@ -7,7 +7,9 @@ type tzfa2_storage = {
   collected_fees: tez;
 }
 
-type change_fee_param = {
+type change_fee_param =
+[@layout:comb]
+{
   old_fee : tez;
   new_fee : tez;
 }
