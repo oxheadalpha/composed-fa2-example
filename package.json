@@ -18,9 +18,11 @@
   "devDependencies": {
     "@jest/types": "^27.5.1",
     "@oxheadalpha/fa2-contracts": "^4.0.0",
+    "@types/jest": "^27.4.1",
     "jest": "^27.5.1",
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.3",
+    "ts-node": "^10.7.0",
     "typescript": "^4.6.2"
   },
   "dependencies": {
@@ -36,6 +38,6 @@
     "build:contract": "yarn tzgen michelson tzfa2_contract tzfa2_contract --main tzfa2_main",
     "build:ts": "tsc -p .",
     "build": "yarn build:contract && yarn build:ts",
-    "test": "jest --runInBand"
+    "test": "(yarn start-sandbox && jest --runInBand) ; yarn kill-sandbox"
   }
 }
