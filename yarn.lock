@@ -508,13 +508,13 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@oxheadalpha/fa2-contracts@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@oxheadalpha/fa2-contracts/-/fa2-contracts-4.1.0.tgz#7f756bf95688de48714ab8070642145f2c364ee9"
-  integrity sha512-fmR6aZlLls+ql0W1XUHcsrTcLKTLZXefvg5VnTVmvUXBTb43kqtvm/8Z+9E/pJ/C7Zh7K3bBHOEvSgI1pbfw9A==
+"@oxheadalpha/fa2-contracts@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@oxheadalpha/fa2-contracts/-/fa2-contracts-4.1.2.tgz#fd29c7e77d4ec66a915e43b6fe1c06f065fb5515"
+  integrity sha512-/4ODA9qNBlLB8LUN4quMGQAZto2wtecJwrfWaMJXp3xkrO0QNGYTLjMrhk1/NMzV3snsfVvhLVuc/wY8/iTXnQ==
   dependencies:
-    "@oxheadalpha/fa2-interfaces" "^4.1.0"
-    "@oxheadalpha/tezos-tools" "^4.1.0"
+    "@oxheadalpha/fa2-interfaces" "^4.1.2"
+    "@oxheadalpha/tezos-tools" "^4.1.2"
     "@taquito/signer" "^11.0.2"
     "@taquito/taquito" "^11.0.2"
     bignumber "^1.1.0"
@@ -526,10 +526,10 @@
     process "^0.11.10"
     zod "^3.11.6"
 
-"@oxheadalpha/fa2-interfaces@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@oxheadalpha/fa2-interfaces/-/fa2-interfaces-4.1.0.tgz#da9df65782aba7fc05760725cab175c27e8d2eed"
-  integrity sha512-3ElZMjm4j2D53snzRgZNgiW2fNNCvW6WffadX+wBsoS1jd0dLZ8u4UX0vetRhaJlqFgDGXlzfWnnjTc1u3ZhYA==
+"@oxheadalpha/fa2-interfaces@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@oxheadalpha/fa2-interfaces/-/fa2-interfaces-4.1.2.tgz#af584dbe9364d616bb22ea26900cec36fb88edbd"
+  integrity sha512-tqPToJxEJ9LBCPMiQqJZbRfVZUz4CKL9znWZmGmLhqisVVKwtRKxWpGPTIANowpJrXyY1TJmBIORUuJd2agYwA==
   dependencies:
     "@taquito/taquito" "^11.0.2"
     "@taquito/tzip12" "^11.0.2"
@@ -545,12 +545,12 @@
     process "^0.11.10"
     valid-url "^1.0.9"
 
-"@oxheadalpha/tezos-tools@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@oxheadalpha/tezos-tools/-/tezos-tools-4.1.0.tgz#fa2b761f7f697afff435e7c4e5a6b83b9e78d2a9"
-  integrity sha512-dRMfKMfECDK3gp+sNGH8OA6LRf132LbHVq1Ru5VaJVPOEyYg02Eojb/TBGkEqXw0cqGgz6pg0YPm6IPLbVHTug==
+"@oxheadalpha/tezos-tools@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@oxheadalpha/tezos-tools/-/tezos-tools-4.1.2.tgz#eaaeb871e0a1cb8d1f09e29ebc4e56c986fb8f94"
+  integrity sha512-9D66zNGpzbzqM4B8Pifr7h+giH+O10OMUaSNh1a50ZMyAe5gGkVdCnnKLcYxba/rD+2Qab2QTT5NYmD5zw5hyw==
   dependencies:
-    "@oxheadalpha/fa2-interfaces" "^4.1.0"
+    "@oxheadalpha/fa2-interfaces" "^4.1.2"
     "@pinata/sdk" "^1.1.23"
     "@taquito/taquito" "^11.0.2"
     async-retry "^1.3.3"
