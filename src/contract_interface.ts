@@ -1,9 +1,11 @@
-import { nat, mutez } from '@oxheadalpha/fa2-interfaces';
+import { nat, mutez, address } from '@oxheadalpha/fa2-interfaces';
 import {
   ContractAbstraction,
   ContractMethod,
-  ContractProvider
+  ContractProvider,
+  TezosToolkit
 } from '@taquito/taquito';
+import { createContractInterface } from './base_ft_contract';
 
 export interface ExchangeAdminContract {
   withdrawFees: () => ContractMethod<ContractProvider>;
@@ -32,3 +34,11 @@ export const Minter = (
   mint: (expected_fee: mutez) => contract.methods.mint(expected_fee),
   burn: (ntokens: nat) => contract.methods.burn(ntokens)
 });
+
+export const createCustomContractInterface = async (
+  toolkit: TezosToolkit,
+  contractAddress: address
+) =>
+  (await createContractInterface(toolkit, contractAddress))
+    .with(Minter)
+    .with(ExchangeAdmin);

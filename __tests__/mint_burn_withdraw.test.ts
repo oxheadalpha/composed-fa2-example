@@ -1,11 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import {
-  ContractMethod,
-  ContractProvider,
-  SendParams,
-  TezosToolkit,
-  TransactionOperation
-} from '@taquito/taquito';
+import { TezosToolkit } from '@taquito/taquito';
 import {
   getBootstrapAccount,
   createTestAccount,
@@ -15,7 +9,6 @@ import { originateTestContract } from './originate_test_contract';
 import {
   address,
   Fa2Contract,
-  nat,
   runMethod,
   tezosApi
 } from '@oxheadalpha/fa2-interfaces';
@@ -245,6 +238,6 @@ describe('Mint/Burn/Withdraw', () => {
     const adminBalanceDiff =
       adminBalanceAfterWithdraw - adminBalanceBeforeWithdraw;
     //received 2 tez
-    expect(adminBalanceDiff/1000000).toBeCloseTo(2, 1);
+    expect(adminBalanceDiff / 1000000).toBeCloseTo(2, 1);
   });
 });
