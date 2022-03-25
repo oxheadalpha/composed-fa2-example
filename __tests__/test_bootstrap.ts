@@ -1,4 +1,4 @@
-import { TezosToolkit, VIEW_LAMBDA } from '@taquito/taquito';
+import { TezosToolkit } from '@taquito/taquito';
 import { InMemorySigner } from '@taquito/signer';
 import { awaitForSandbox } from '@oxheadalpha/tezos-tools';
 import { address } from '@oxheadalpha/fa2-interfaces';
@@ -23,20 +23,6 @@ async function createToolkit(
   const toolkit = new TezosToolkit(rpc);
   toolkit.setProvider({ rpc, signer });
   return toolkit;
-}
-
-export async function originateLambdaViewContract(
-  tezos: TezosToolkit
-): Promise<address> {
-  console.log('originating Taquito lambda view contract...');
-  const op = await tezos.contract.originate({
-    code: VIEW_LAMBDA.code,
-    storage: VIEW_LAMBDA.storage
-  });
-  const lambdaContract = await op.contract();
-
-  console.log(`originated Taquito lambda view ${lambdaContract.address}`);
-  return lambdaContract.address;
 }
 
 export async function createTestAccount(
