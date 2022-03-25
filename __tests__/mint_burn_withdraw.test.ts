@@ -1,10 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { TezosToolkit } from '@taquito/taquito';
-import {
-  getBootstrapAccount,
-  createTestAccount,
-  originateLambdaViewContract
-} from './test_bootstrap';
+import { getBootstrapAccount, createTestAccount } from './test_bootstrap';
 import { originateTestContract } from './originate_test_contract';
 import {
   address,
@@ -57,7 +53,6 @@ const getTotalSupply = async (
 describe('Mint/Burn/Withdraw', () => {
   let mike: TezosToolkit;
   let jane: TezosToolkit;
-  let lambdaView: address;
 
   beforeAll(async () => {
     const tz = await getBootstrapAccount();
@@ -69,7 +64,6 @@ describe('Mint/Burn/Withdraw', () => {
       tz,
       'edskRqb8GgnD4d2B7nR3ofJajDU7kwooUzXz7yMwRdLDP9j7Z1DvhaeBcs8WkJ4ELXXJgVkq5tGwrFibojDjYVaG7n4Tq1qDxZ'
     );
-    lambdaView = await originateLambdaViewContract(tz);
   });
 
   test('Invalid Mint', async () => {
@@ -91,7 +85,7 @@ describe('Mint/Burn/Withdraw', () => {
 
   test('Mint', async () => {
     const contractAddress = await originateTestContract(mike, 2000000);
-    const ownerApi = (await tezosApi(jane, lambdaView).at(contractAddress))
+    const ownerApi = (await tezosApi(jane).at(contractAddress))
       .with(Minter)
       .withFa2();
 
@@ -122,7 +116,7 @@ describe('Mint/Burn/Withdraw', () => {
 
   test('Invalid Burn', async () => {
     const contractAddress = await originateTestContract(mike, 2000000);
-    const ownerApi = (await tezosApi(jane, lambdaView).at(contractAddress))
+    const ownerApi = (await tezosApi(jane).at(contractAddress))
       .with(Minter)
       .withFa2();
 
@@ -153,7 +147,7 @@ describe('Mint/Burn/Withdraw', () => {
 
   test('Burn', async () => {
     const contractAddress = await originateTestContract(mike, 1000000);
-    const ownerApi = (await tezosApi(jane, lambdaView).at(contractAddress))
+    const ownerApi = (await tezosApi(jane).at(contractAddress))
       .with(Minter)
       .withFa2();
 
@@ -200,7 +194,7 @@ describe('Mint/Burn/Withdraw', () => {
   test('Withdraw', async () => {
     const contractAddress = await originateTestContract(mike, 1000000);
     const ownerApi = (
-      await tezosApi(jane, lambdaView).at(contractAddress)
+      await tezosApi(jane).at(contractAddress)
     ).with(Minter);
 
     await runMethod(ownerApi.mint(1000000), { amount: 5000000, mutez: true });

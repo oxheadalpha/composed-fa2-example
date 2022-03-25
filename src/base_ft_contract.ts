@@ -9,10 +9,9 @@ export const createStorage = fa2.contractStorage
 
 export const createContractInterface = async (
   toolkit: TezosToolkit,
-  contractAddress: address,
-  lambdaView?: address
+  contractAddress: address
 ) =>
-  (await tezosApi(toolkit, lambdaView).at(contractAddress))
+  (await tezosApi(toolkit).at(contractAddress))
     .withFa2()
     .withPausableSimpleAdmin()
     ;

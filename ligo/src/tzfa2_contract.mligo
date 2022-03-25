@@ -33,9 +33,11 @@ let assert_fee (expected_fee, current_fee : tez * tez) : unit =
 let mint (expected_fee, storage : tez * tzfa2_storage)
     : (operation list) * tzfa2_storage =
   let _ = assert_fee (expected_fee, storage.fee) in
-  let ntokens : nat = if Tezos.amount <= expected_fee
-  then (failwith "INSUFFICIENT_AMOUNT" : nat)
-  else (Tezos.amount - expected_fee) / 1mutez in
+  let tz : tez option = Tezos.amount - expected_fee in
+  let ntokens : nat = match tz with
+  | None -> (failwith "INSUFFICIENT_AMOUNT" : nat)
+  | Some tz -> tz / 1mutez
+  in
 
   let new_ledger = 
     inc_balance (Tezos.sender, ntokens, storage.asset.assets.ledger) in
@@ -53,8 +55,7 @@ let burn (ntokens, storage : nat * tzfa2_storage)
 
   let new_ledger = 
     dec_balance (Tezos.sender, ntokens, storage.asset.assets.ledger) in
-  let new_supply_opt =
-    Michelson.is_nat (storage.asset.assets.total_supply - ntokens) in
+  let new_supply_opt = is_nat (storage.asset.assets.total_supply - ntokens) in
   let new_supply = match  new_supply_opt with
   | Some s -> s
   | None -> (failwith fa2_insufficient_balance : nat)
