@@ -111,7 +111,7 @@ type change_fee_param = {
 }
 
 type tzfa2_entrypoints =
-  | Mint of tez (* accepts desired exchange fee percent *)
+  | Mint of tez (* expected exchange fee *)
   | Burn of nat (* number of tokens to burn *)
   | Change_fee of change_fee_param
   | Withdraw_fees (* the admin withdraws collected fees *)
@@ -171,6 +171,44 @@ code, since the public modules API will remain the same.
 
 ### Customize Contract Origination
 
-On previous steps we have generated TypeScript 
+On previous steps we have generated the TypeScript
+[createStorage()](./src/base_ft_contract.ts) function. The function accepts a
+parameter object with three fields:
+
+* `metadata` - a string representing the contract TZIP-16 metadata
+* `owner` - the address of the contract owner/admin
+* `token` - token metadata
+
+The custom contract extension defines two extra fields: `fee` and `collected-fees`
+that need to be initialized.
+
+```ocaml
+type tzfa2_storage = {
+  asset : asset_storage;
+  fee : tez;
+  collected_fees: tez;
+}
+```
+
+The `collected_fees` should be 0 mutez during contract origination and we would
+need an extra parameter specifying initial fee. Based on the generated
+`createStorage()` function we can define the
+[createCustomStorage()](./src/origination.ts) function like this:
+
+```typescript
+export const createCustomStorage = (
+  metadata: string,
+  owner: address,
+  token: TokenMetadataInternal,
+  fee: mutez //fee is a part of the custom storage extension
+) => {
+  const baseStorage = createStorage({
+    metadata,
+    owner,
+    token
+  });
+  return { asset: baseStorage, fee, collected_fees: 0 };
+};
+```
 
 ### Define TypeScript API to Access Custom Entry Points

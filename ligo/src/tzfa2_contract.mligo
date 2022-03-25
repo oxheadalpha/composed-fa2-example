@@ -15,7 +15,7 @@ type change_fee_param =
 }
 
 type tzfa2_entrypoints =
-  | Mint of tez (* accepts desired exchange fee percent *)
+  | Mint of tez (* expected exchange fee *)
   | Burn of nat (* number of tokens to burn *)
   | Change_fee of change_fee_param
   | Withdraw_fees (* the admin withdraws collected fees *)
