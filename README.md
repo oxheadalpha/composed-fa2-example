@@ -33,7 +33,7 @@ where the FA2 token can be exchanged for Tez. Any address can invoke the `mint`
 contract entry point and transfer some Tez to exchange for the FA2 token. Any
 FA2 token owner can also exchange FA2 tokens for Tez by calling the `burn`
 contract entry point. The exchange rate is always one Mutez per one FA2 token.
-In addition, the contract collects a flat exchange fee that can set by the
+In addition, the contract collects a flat exchange fee that can be set by the
 contract admin. The contract admin can change the exchange fee and withdraw
 collected fees. The contract admin can pause and unpause the contract. If the
 contract is paused, token owners cannot transfer, mint and burn tokens.
@@ -58,7 +58,7 @@ LIGO sources imported to ~/composed-fa2-example/ligo
 
 Initialize `tzGen` tool environment. We are using the default settings for LIGO
 source code directory (`./ligo`) and TypeScript source code directory (`./src`).
-For the compilation output we specify `.\dist` directory.
+For the contract compilation output we specify `.\dist` directory.
 
 ```sh
 $ yarn tzgen init --compile-out ./dist
@@ -90,7 +90,8 @@ $ yarn tzgen type-script my_contract.json base_ft_contract.ts
 
 The generated contract already has the standard FA2 functionality: token
 transfer, operators etc. On the next step we are going to extend it with the
-custom mint and burn implementation.
+custom mint and burn implementation, and exchange admin entry points to
+change the fee and withdraw collected fees.
 
 ### Extend Base LIGO Contract
 
@@ -111,7 +112,7 @@ type tzfa2_storage = {
 }
 ```
 
-Define custom entry points type:
+Define the custom entry points type:
 
 ```ocaml
 type change_fee_param = {
@@ -120,8 +121,8 @@ type change_fee_param = {
 }
 
 type tzfa2_entrypoints =
-  | Mint of tez (* expected exchange fee *)
-  | Burn of nat (* number of tokens to burn *)
+  | Mint of tez (* param is expected exchange fee *)
+  | Burn of nat (* param is the number of tokens to burn *)
   | Change_fee of change_fee_param
   | Withdraw_fees (* the admin withdraws collected fees *)
 ```
@@ -199,9 +200,9 @@ type tzfa2_storage = {
 }
 ```
 
-The `collected_fees` should be 0 mutez during contract origination and we would
-need an extra parameter specifying initial fee. Based on the generated
-`createStorage()` function we can define the
+The `collected_fees` should be 0 mutez during the contract origination and we
+would need an extra parameter specifying the initial fee. Based on the generated
+`createStorage()` function, we can define the
 [createCustomStorage()](./src/origination.ts) function like this:
 
 ```typescript
@@ -251,7 +252,7 @@ export interface MinterContract {
 }
 ```
 
-The next step with are going to implement two constructor functions:
+In the next step we are going to implement two constructor functions:
 `ExchangeAdmin` and `Minter`. The actual implementation can be found
 [here](./src/contract_interface.ts).
 [See](https://github.com/oxheadalpha/nft-tutorial/tree/master/packages/fa2-interfaces#custom-contracts)
