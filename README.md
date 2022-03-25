@@ -5,6 +5,15 @@ This is an example project to demonstrate usage of the
 package, a library and a tool to generate modular Tezos FA2 contracts and
 TypeScript interfaces.
 
+## Table of Contents
+
+* [Initial Setup](#initial-setup)
+* [Custom FA2 Contract](#custom-fa2-contract)
+  * [Generate Base Fungible Token FA2 Contract](#generate-base-fungible-token-fa2-contract)
+  * [Extend Base LIGO Contract](#extend-base-ligo-contract)
+  * [Customize Contract Origination](#customize-contract-origination)
+  * [Define TypeScript API to Access Custom Entry Points](#define-typescript-api-to-access-custom-entry-points)
+
 ## Initial Setup
 
 Once we have created a TypeScript project, we need to add a development
