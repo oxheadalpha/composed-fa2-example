@@ -212,3 +212,57 @@ export const createCustomStorage = (
 ```
 
 ### Define TypeScript API to Access Custom Entry Points
+
+We have defined the following custom entry points:
+
+* `change_fee` - the admin can change the exchange fee.
+* `withdraw_fees` - the admin can withdraw collected fees.
+* `mint` - any token owner can mint some FA2 tokens in exchange for transferred
+  tez.
+* `burn` - any token owner can exchange his FA2 tokens for tez.
+
+We are going to split those entry points into two different TypeScript interfaces:
+`ExchangeAdminContract` and `MinterContract`. Each entry point is represented by
+the interface method that returns `ContractMethod<ContractProvider>`. The
+underlying implementation will invoke Taquito's contract method and can be mixed
+with other contract method calls.
+
+```typescript
+export interface ExchangeAdminContract {
+  withdrawFees: () => ContractMethod<ContractProvider>;
+  changeFee: (
+    old_fee: mutez,
+    new_fee: mutez
+  ) => ContractMethod<ContractProvider>;
+}
+
+export interface MinterContract {
+  mint: (expected_fee: mutez) => ContractMethod<ContractProvider>;
+  burn: (ntokens: nat) => ContractMethod<ContractProvider>;
+}
+```
+
+The next step with are going to implement two constructor functions:
+`ExchangeAdmin` and `Minter`. The actual implementation can be found
+[here](./src/contract_interface.ts).
+[See](https://github.com/oxheadalpha/nft-tutorial/tree/master/packages/fa2-interfaces#custom-contracts)
+for more details.
+
+Now we can use newly-defined API like this:
+
+```typescript
+const ownerApi = (
+  await tezosApi(toolkit).at(contractAddress)
+).with(Minter);
+
+await runMethod(ownerApi.mint(1000000), { amount: 5000000, mutez: true });
+```
+
+and
+
+```typescript
+const adminApi = (await tezosApi(toolkit).at(contractAddress)).with(
+  ExchangeAdmin
+);
+const run = runMethod(adminApi.changeFee(1, 2));
+```
