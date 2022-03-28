@@ -1,6 +1,6 @@
 {
   "name": "@oxheadalpha/composed-fa2-example",
-  "description": "Example of a composed and customized FA2 contract using @oxheadalpha/fa2-contracts",
+  "description": "Example of a composed and customized FA2 contract using tzGen (@oxheadalpha/fa2-contracts)",
   "version": "0.0.2",
   "keywords": [
     "tezos",
