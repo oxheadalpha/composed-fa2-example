@@ -47,8 +47,8 @@ entry points' methods and storage origination function.
 ### Generate Base Fungible Token FA2 Contract
 
 Import LIGO library sources from `@oxheadalpha/fa2-contracts` package with the
-`tzGen import-ligo` command. We are using the default destination directory for
-the LIGO code `./ligo`.
+`yarn tzGen import-ligo` command. We are using the default destination directory
+for the LIGO code `./ligo`.
 
 ```sh
 $ yarn tzgen import-ligo
