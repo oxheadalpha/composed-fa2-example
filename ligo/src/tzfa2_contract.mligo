@@ -33,14 +33,15 @@ let assert_fee (expected_fee, current_fee : tez * tez) : unit =
 let mint (expected_fee, storage : tez * tzfa2_storage)
     : (operation list) * tzfa2_storage =
   let _ = assert_fee (expected_fee, storage.fee) in
-  let tz : tez option = Tezos.amount - expected_fee in
+  let tz : tez option = (Tezos.get_amount ()) - expected_fee in
   let ntokens : nat = match tz with
   | None -> (failwith "INSUFFICIENT_AMOUNT" : nat)
   | Some tz -> tz / 1mutez
   in
 
-  let new_ledger = 
-    inc_balance (Tezos.sender, ntokens, storage.asset.assets.ledger) in
+  let sender = Tezos.get_sender () in
+  let new_ledger = FungibleToken.inc_balance
+    (sender, ntokens, storage.asset.assets.ledger) in
   let new_supply = storage.asset.assets.total_supply + ntokens in
   let new_s = { storage with 
     collected_fees = storage.collected_fees + storage.fee;
@@ -51,10 +52,11 @@ let mint (expected_fee, storage : tez * tzfa2_storage)
 
 let burn (ntokens, storage : nat * tzfa2_storage)
     : (operation list) * tzfa2_storage =
-  let _ = assert_fee (Tezos.amount, storage.fee) in
+  let _ = assert_fee ((Tezos.get_amount ()), storage.fee) in
 
-  let new_ledger = 
-    dec_balance (Tezos.sender, ntokens, storage.asset.assets.ledger) in
+  let sender = Tezos.get_sender () in
+  let new_ledger = FungibleToken.dec_balance
+      (sender, ntokens, storage.asset.assets.ledger) in
   let new_supply_opt = is_nat (storage.asset.assets.total_supply - ntokens) in
   let new_supply = match  new_supply_opt with
   | Some s -> s
@@ -67,7 +69,7 @@ let burn (ntokens, storage : nat * tzfa2_storage)
     asset.assets.total_supply = new_supply;
   } in
 
-  let callback : unit contract option = Tezos.get_contract_opt Tezos.sender in
+  let callback : unit contract option = Tezos.get_contract_opt sender in
   let op = match callback with
   | Some c -> Tezos.transaction unit (ntokens * 1mutez) c
   | None -> (failwith "NO_CALLBACK" : operation)
@@ -78,7 +80,7 @@ let withdraw_fees (storage : tzfa2_storage)
     : (operation list) * tzfa2_storage =
   let new_s = { storage with collected_fees = 0mutez; } in
   let callback : unit contract option =
-    Tezos.get_contract_opt Tezos.sender in
+    Tezos.get_contract_opt (Tezos.get_sender ()) in
   let op = match callback with
   | Some c -> Tezos.transaction unit storage.collected_fees c
   | None -> (failwith "NO_CALLBACK" : operation)
@@ -95,21 +97,21 @@ let custom_entrypoints (param, storage : tzfa2_entrypoints * tzfa2_storage)
     : (operation list) * tzfa2_storage =
   match param with
   | Mint expected_fee ->
-    let _ = fail_if_paused storage.asset.admin in
+    let _ = Admin.fail_if_paused storage.asset.admin in
     let _ = fail_if_not_minter storage.asset in
     mint (expected_fee, storage)
 
   | Burn ntokens ->
-    let _ = fail_if_paused storage.asset.admin in
+    let _ = Admin.fail_if_paused storage.asset.admin in
     let _ = fail_if_not_minter storage.asset in
     burn (ntokens, storage)
 
   | Change_fee p ->
-    let _ = fail_if_not_admin storage.asset.admin in
+    let _ = Admin.fail_if_not_admin storage.asset.admin in
     change_fee (p, storage)
     
   | Withdraw_fees ->
-    let _ = fail_if_not_admin storage.asset.admin in
+    let _ = Admin.fail_if_not_admin storage.asset.admin in
     withdraw_fees storage
 
 let tzfa2_main (param, storage: tzfa2_main_entrypoint * tzfa2_storage)
