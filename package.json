@@ -1,7 +1,7 @@
 {
   "name": "@oxheadalpha/composed-fa2-example",
   "description": "Example of a composed and customized FA2 contract using @oxheadalpha/fa2-contracts",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "keywords": [
     "tezos",
     "smart contracts",
@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "@jest/types": "^27.5.1",
-    "@oxheadalpha/fa2-contracts": "^5.0.1",
-    "@oxheadalpha/tezos-tools": "^5.0.1",
+    "@oxheadalpha/fa2-contracts": "^8.0.0",
+    "@oxheadalpha/tezos-tools": "^8.0.0",
     "@types/jest": "^27.4.1",
     "jest": "^27.5.1",
     "prettier": "^2.5.1",
@@ -28,12 +28,10 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@oxheadalpha/fa2-interfaces": "^5.0.1",
-    "@taquito/signer": "^12.0.0",
-    "@taquito/taquito": "^12.0.0",
-    "bignumber.js": "^9.0.2",
-    "fs": "^0.0.1-security",
-    "path": "^0.12.7"
+    "@oxheadalpha/fa2-interfaces": "^8.0.0",
+    "@taquito/signer": "^17.0.0",
+    "@taquito/taquito": "^17.0.0",
+    "bignumber.js": "^9.0.2"
   },
   "scripts": {
     "clear": "yarn rimraf dist",
