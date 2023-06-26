@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { TezosToolkit } from '@taquito/taquito';
+import { ContractProvider, TezosToolkit } from '@taquito/taquito';
 import { getBootstrapAccount, createTestAccount } from './test_bootstrap';
 import { originateTestContract } from './originate_test_contract';
 import {
@@ -22,7 +22,7 @@ const getTezBalance = async (
 };
 
 const getTokenBalance = async (
-  contract: Fa2Contract,
+  contract: Fa2Contract<ContractProvider>,
   owner: address
 ): Promise<number> => {
   const tokenBal = await contract.queryBalances([{ owner, token_id: 0 }]);

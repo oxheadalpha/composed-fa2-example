@@ -39,6 +39,6 @@
     "build:contract": "yarn tzgen michelson tzfa2_contract tzfa2_contract --main tzfa2_main",
     "build:ts": "tsc -p .",
     "build": "yarn clear && yarn generate:contract && yarn build:contract && yarn build:ts",
-    "test": "(yarn start-sandbox && jest --runInBand) ; yarn kill-sandbox"
+    "test": "(yarn start-sandbox && jest --runInBand --bail) ; yarn kill-sandbox"
   }
 }

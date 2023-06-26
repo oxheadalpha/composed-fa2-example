@@ -43,10 +43,13 @@ let mint (expected_fee, storage : tez * tzfa2_storage)
   let new_ledger = FungibleToken.inc_balance
     (sender, ntokens, storage.asset.assets.ledger) in
   let new_supply = storage.asset.assets.total_supply + ntokens in
+  let new_assets : Token.storage = { storage.asset.assets with
+    ledger = new_ledger;
+    total_supply = new_supply;
+  } in 
   let new_s = { storage with 
     collected_fees = storage.collected_fees + storage.fee;
-    asset.assets.ledger = new_ledger;
-    asset.assets.total_supply = new_supply;
+    asset.assets = new_assets;
   } in
   ([] : operation list), new_s
 
@@ -63,10 +66,14 @@ let burn (ntokens, storage : nat * tzfa2_storage)
   | None -> (failwith fa2_insufficient_balance : nat)
   in
 
+  let new_assets : Token.storage = { storage.asset.assets with
+    ledger = new_ledger;
+    total_supply = new_supply;
+  } in 
+
   let new_s = { storage with 
     collected_fees = storage.collected_fees + storage.fee;
-    asset.assets.ledger = new_ledger;
-    asset.assets.total_supply = new_supply;
+    asset.assets = new_assets;
   } in
 
   let callback : unit contract option = Tezos.get_contract_opt sender in
