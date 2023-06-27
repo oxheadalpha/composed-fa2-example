@@ -2,7 +2,7 @@
 #include "../fa2_lib/fa2/fa2_errors.mligo"
 
 type tzfa2_storage = {
-  asset : asset_storage;
+  asset : Asset.storage;
   fee : tez;
   collected_fees: tez;
 }
@@ -21,7 +21,7 @@ type tzfa2_entrypoints =
   | Withdraw_fees (* the admin withdraws collected fees *)
 
 type tzfa2_main_entrypoint =
-  | Asset of asset_entrypoints
+  | Asset of Asset.entrypoints
   | Tzfa2 of tzfa2_entrypoints
 
 [@inline]
@@ -41,15 +41,15 @@ let mint (expected_fee, storage : tez * tzfa2_storage)
 
   let sender = Tezos.get_sender () in
   let new_ledger = FungibleToken.inc_balance
-    (sender, ntokens, storage.asset.assets.ledger) in
-  let new_supply = storage.asset.assets.total_supply + ntokens in
-  let new_assets : Token.storage = { storage.asset.assets with
+    (sender, ntokens, storage.asset.tokens.ledger) in
+  let new_supply = storage.asset.tokens.total_supply + ntokens in
+  let new_tokens : Token.storage = { storage.asset.tokens with
     ledger = new_ledger;
     total_supply = new_supply;
   } in 
   let new_s = { storage with 
     collected_fees = storage.collected_fees + storage.fee;
-    asset.assets = new_assets;
+    asset.tokens = new_tokens;
   } in
   ([] : operation list), new_s
 
@@ -59,21 +59,21 @@ let burn (ntokens, storage : nat * tzfa2_storage)
 
   let sender = Tezos.get_sender () in
   let new_ledger = FungibleToken.dec_balance
-      (sender, ntokens, storage.asset.assets.ledger) in
-  let new_supply_opt = is_nat (storage.asset.assets.total_supply - ntokens) in
+      (sender, ntokens, storage.asset.tokens.ledger) in
+  let new_supply_opt = is_nat (storage.asset.tokens.total_supply - ntokens) in
   let new_supply = match  new_supply_opt with
   | Some s -> s
   | None -> (failwith fa2_insufficient_balance : nat)
   in
 
-  let new_assets : Token.storage = { storage.asset.assets with
+  let new_tokens : Token.storage = { storage.asset.tokens with
     ledger = new_ledger;
     total_supply = new_supply;
   } in 
 
   let new_s = { storage with 
     collected_fees = storage.collected_fees + storage.fee;
-    asset.assets = new_assets;
+    asset.tokens = new_tokens;
   } in
 
   let callback : unit contract option = Tezos.get_contract_opt sender in
@@ -105,12 +105,12 @@ let custom_entrypoints (param, storage : tzfa2_entrypoints * tzfa2_storage)
   match param with
   | Mint expected_fee ->
     let _ = Admin.fail_if_paused storage.asset.admin in
-    let _ = fail_if_not_minter storage.asset in
+    let _ = Asset.fail_if_not_minter storage.asset in
     mint (expected_fee, storage)
 
   | Burn ntokens ->
     let _ = Admin.fail_if_paused storage.asset.admin in
-    let _ = fail_if_not_minter storage.asset in
+    let _ = Asset.fail_if_not_minter storage.asset in
     burn (ntokens, storage)
 
   | Change_fee p ->
@@ -126,7 +126,7 @@ let tzfa2_main (param, storage: tzfa2_main_entrypoint * tzfa2_storage)
   match param with
   | Asset asset ->
     (* dispatch call to the generated contract main function implementation *)
-    let ops, new_asset = asset_main (asset, storage.asset) in
+    let ops, new_asset = Asset.main (asset, storage.asset) in
     let new_s = { storage with asset = new_asset } in
     (ops, new_s)
   | Tzfa2 tzfa2_param  -> custom_entrypoints (tzfa2_param, storage)

@@ -45,9 +45,9 @@ const getTotalSupply = async (
 ): Promise<number> => {
   const contract = await tz.contract.at(contractAddress);
   const storage = await contract.storage<{
-    asset: { assets: { total_supply: BigNumber } };
+    asset: { tokens: { total_supply: BigNumber } };
   }>();
-  return storage.asset.assets.total_supply.toNumber();
+  return storage.asset.tokens.total_supply.toNumber();
 };
 
 describe('Mint/Burn/Withdraw', () => {
