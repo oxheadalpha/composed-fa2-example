@@ -1,7 +1,7 @@
 {
   "name": "@oxheadalpha/composed-fa2-example",
   "description": "Example of a composed and customized FA2 contract using @oxheadalpha/fa2-contracts",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "keywords": [
     "tezos",
     "smart contracts",
