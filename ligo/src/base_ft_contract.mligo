@@ -36,5 +36,3 @@ make sense if at least one of "CAN_MINT", "CAN_BURN" is selected.
 (** Contract entry point is "Asset.main" function *)
 #include "../fa2_lib/fa2_asset.mligo"
 
-let asset_main = Asset.main
-

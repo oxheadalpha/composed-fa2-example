@@ -130,32 +130,34 @@ type tzfa2_entrypoints =
 Define a new main entry point function and dispatch the calls to handler functions:
 
 ```ocaml
-type tzfa2_main_entrypoint =
-  | Asset of asset_entrypoints
-  | Tzfa2 of tzfa2_entrypoints
-
 let custom_entrypoints (param, storage : tzfa2_entrypoints * tzfa2_storage)
     : (operation list) * tzfa2_storage =
   (* will add custom entry points handlers later *)
   ([] : operation list), storage
 
-let tzfa2_main (param, storage: tzfa2_main_entrypoint * tzfa2_storage)
-    : (operation list) * tzfa2_storage =
-  match param with
-  | Asset asset ->
+module TzFa2 = struct
+
+  [@entry]
+  let asset (param : Asset.entrypoints) (storage : tzfa2_storage)
+      : (operation list) * tzfa2_storage =
     (* dispatch call to the generated contract main function implementation *)
-    let ops, new_asset = asset_main (asset, storage.asset) in
+    let ops, new_asset = Asset.main (param, storage.asset) in
     let new_s = { storage with asset = new_asset } in
     (ops, new_s)
-  
-  | Tzfa2 tzfa2_param  -> custom_entrypoints (tzfa2_param, storage)
+
+  [@entry]
+  let tzfa2 (param : tzfa2_entrypoints) (storage : tzfa2_storage)
+      : (operation list) * tzfa2_storage =
+    custom_entrypoints (param, storage)
+
+end
 ```
 
 To test that our contract code compiles, we can add a build script based on
 `tzGen` to the `package.json` file:
 
 ```json
-"build:contract": "yarn tzgen michelson tzfa2_contract tzfa2_contract --main tzfa2_main"
+"build:contract": "yarn tzgen michelson tzfa2_contract tzfa2_contract --main TzFa2"
 ```
 
 Now we can run the following command
