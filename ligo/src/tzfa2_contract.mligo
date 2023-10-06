@@ -20,9 +20,6 @@ type tzfa2_entrypoints =
   | Change_fee of change_fee_param
   | Withdraw_fees (* the admin withdraws collected fees *)
 
-type tzfa2_main_entrypoint =
-  | Asset of Asset.entrypoints
-  | Tzfa2 of tzfa2_entrypoints
 
 [@inline]
 let assert_fee (expected_fee, current_fee : tez * tez) : unit =
@@ -121,12 +118,19 @@ let custom_entrypoints (param, storage : tzfa2_entrypoints * tzfa2_storage)
     let _ = Admin.fail_if_not_admin storage.asset.admin in
     withdraw_fees storage
 
-let tzfa2_main (param, storage: tzfa2_main_entrypoint * tzfa2_storage)
+module TzFa2 = struct
+
+[@entry]
+let asset (param : Asset.entrypoints) (storage : tzfa2_storage)
     : (operation list) * tzfa2_storage =
-  match param with
-  | Asset asset ->
-    (* dispatch call to the generated contract main function implementation *)
-    let ops, new_asset = Asset.main (asset, storage.asset) in
-    let new_s = { storage with asset = new_asset } in
-    (ops, new_s)
-  | Tzfa2 tzfa2_param  -> custom_entrypoints (tzfa2_param, storage)
+  (* dispatch call to the generated contract main function implementation *)
+  let ops, new_asset = Asset.main (param, storage.asset) in
+  let new_s = { storage with asset = new_asset } in
+  (ops, new_s)
+
+[@entry]
+let tzfa2 (param : tzfa2_entrypoints) (storage : tzfa2_storage)
+    : (operation list) * tzfa2_storage =
+  custom_entrypoints (param, storage)
+
+end
